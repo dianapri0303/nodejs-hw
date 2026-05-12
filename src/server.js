@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import { errors } from 'celebrate';
 
 import { connectMongoDB } from './db/connectMongoDB.js';
 
@@ -13,13 +14,10 @@ import { errorHandler } from './middleware/errorHandler.js';
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 
-// connect db
-await connectMongoDB();
-
 // middleware
+app.use(logger);
 app.use(express.json());
 app.use(cors());
-app.use(logger);
 
 // routes
 app.use(notesRouter);
@@ -27,8 +25,12 @@ app.use(notesRouter);
 //404
 app.use(notFoundHandler);
 
-//error
+//errors
+app.use(errors());
 app.use(errorHandler);
+
+// connect db
+await connectMongoDB();
 
 // server start
 app.listen(PORT, () => {
