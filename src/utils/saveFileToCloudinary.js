@@ -8,11 +8,15 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const saveFileToCloudinary = async (buffer) => {
+export const saveFileToCloudinary = async (buffer, userId) => {
   return await new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
+        folder: 'students-app/avatars',
+        public_id: `avatar_${userId}`,
         resource_type: 'image',
+        overwrite: true,
+        unique_filename: false,
       },
       (error, result) => {
         if (error) {
